@@ -1,14 +1,16 @@
-﻿import { useState } from 'react'
+import { useState } from 'react'
 import type { Product } from './types/product'
 import { initialProducts } from './data/products'
 import ProductList from './components/ProductList'
 import PageHeader from './components/PageHeader'
 import ProductFormModal from './components/ProductFormModal'
+import DeleteConfirmModal from './components/DeleteConfirmModal'
 
 function App() {
   const [products, setProducts] = useState<Product[]>(initialProducts)
   const [isAddOpen, setIsAddOpen] = useState(false)
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
+  const [deletingProduct, setDeletingProduct] = useState<Product | null>(null)
 
   function handleAdd(data: { name: string; price: number }) {
     const largestId = products.reduce(
@@ -34,13 +36,28 @@ function App() {
   }
 
   function handleOpenAdd() {
+    setDeletingProduct(null)
     setEditingProduct(null)
     setIsAddOpen(true)
   }
 
   function handleOpenEdit(product: Product) {
+    setDeletingProduct(null)
     setIsAddOpen(false)
     setEditingProduct(product)
+  }
+
+  function handleOpenDelete(product: Product) {
+    setIsAddOpen(false)
+    setEditingProduct(null)
+    setDeletingProduct(product)
+  }
+
+  function handleDelete() {
+    if (deletingProduct === null) return
+    const idToDelete = deletingProduct.id
+    setProducts(products.filter((p) => p.id !== idToDelete))
+    setDeletingProduct(null)
   }
 
   return (
@@ -51,7 +68,7 @@ function App() {
       <ProductList
         products={products}
         onEdit={handleOpenEdit}
-        onDelete={() => {}}
+        onDelete={handleOpenDelete}
       />
       {isAddOpen && (
         <ProductFormModal
@@ -67,6 +84,13 @@ function App() {
           product={editingProduct}
           onSubmit={handleEdit}
           onClose={() => setEditingProduct(null)}
+        />
+      )}
+      {deletingProduct !== null && (
+        <DeleteConfirmModal
+          product={deletingProduct}
+          onConfirm={handleDelete}
+          onClose={() => setDeletingProduct(null)}
         />
       )}
     </>
