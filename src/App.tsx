@@ -2,13 +2,14 @@ import { useState } from 'react'
 import type { Product } from './types/product'
 import { initialProducts } from './data/products'
 import ProductList from './components/ProductList'
+import PageHeader from './components/PageHeader'
 
 function App() {
   const [products] = useState<Product[]>(initialProducts)
 
   return (
     <>
-      <h1>Manajemen Produk</h1>
+      <PageHeader onAddClick={() => {}} />
       <ProductList
         products={products}
         onEdit={() => {}}
