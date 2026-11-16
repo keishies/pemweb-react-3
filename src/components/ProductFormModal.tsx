@@ -1,14 +1,17 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import type { FormEvent } from 'react'
+import type { Product } from '../types/product'
 
 interface ProductFormModalProps {
+  mode: 'add' | 'edit'
+  product?: Product
   onSubmit: (data: { name: string; price: number }) => void
   onClose: () => void
 }
 
-function ProductFormModal({ onSubmit, onClose }: ProductFormModalProps) {
-  const [name, setName] = useState('')
-  const [priceInput, setPriceInput] = useState('')
+function ProductFormModal({ mode, product, onSubmit, onClose }: ProductFormModalProps) {
+  const [name, setName] = useState(product?.name ?? '')
+  const [priceInput, setPriceInput] = useState(product ? String(product.price) : '')
   const [errors, setErrors] = useState({ name: false, price: false })
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -39,8 +42,15 @@ function ProductFormModal({ onSubmit, onClose }: ProductFormModalProps) {
         >
           ×
         </button>
-        <h2>Tambah Produk</h2>
-        <p>Masukkan informasi produk baru.</p>
+        <h2>{mode === 'add' ? 'Tambah Produk' : 'Edit Produk'}</h2>
+        <p>
+          {mode === 'add'
+            ? 'Masukkan informasi produk baru.'
+            : 'Perbarui informasi produk yang dipilih.'}
+        </p>
+        {mode === 'edit' && product && (
+          <p className="modal__id">ID: {product.id}</p>
+        )}
         <form onSubmit={handleSubmit}>
           <label htmlFor="product-name">Nama Produk</label>
           <input
@@ -68,7 +78,9 @@ function ProductFormModal({ onSubmit, onClose }: ProductFormModalProps) {
           </p>
 
           <button type="button" onClick={onClose}>Batal</button>
-          <button type="submit">Simpan Produk</button>
+          <button type="submit">
+            {mode === 'add' ? 'Simpan Produk' : 'Simpan Perubahan'}
+          </button>
         </form>
       </div>
     </div>
