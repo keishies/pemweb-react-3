@@ -5,12 +5,14 @@ import ProductList from './components/ProductList'
 import PageHeader from './components/PageHeader'
 import ProductFormModal from './components/ProductFormModal'
 import DeleteConfirmModal from './components/DeleteConfirmModal'
+import SearchBar from './components/SearchBar'
 
 function App() {
   const [products, setProducts] = useState<Product[]>(initialProducts)
   const [isAddOpen, setIsAddOpen] = useState(false)
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
   const [deletingProduct, setDeletingProduct] = useState<Product | null>(null)
+  const [search, setSearch] = useState('')
 
   function handleAdd(data: { name: string; price: number }) {
     const largestId = products.reduce(
@@ -60,16 +62,32 @@ function App() {
     setDeletingProduct(null)
   }
 
+  const filteredProducts = products.filter((product) =>
+    product.name.toLowerCase().includes(search.trim().toLowerCase()),
+  )
+
   return (
     <>
       <PageHeader
         onAddClick={handleOpenAdd}
       />
-      <ProductList
-        products={products}
-        onEdit={handleOpenEdit}
-        onDelete={handleOpenDelete}
+      <SearchBar
+        value={search}
+        onChange={setSearch}
+        resultCount={filteredProducts.length}
       />
+      {filteredProducts.length === 0 ? (
+        <p>Produk tidak ditemukan.</p>
+      ) : (
+        <ProductList
+          products={filteredProducts}
+          onEdit={handleOpenEdit}
+          onDelete={handleOpenDelete}
+        />
+      )}
+      <p className="product-summary">
+        Menampilkan {filteredProducts.length} dari {products.length} produk
+      </p>
       {isAddOpen && (
         <ProductFormModal
           mode="add"
