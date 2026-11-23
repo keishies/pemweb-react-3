@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { Product } from './types/product'
 import { getProducts } from './api/products'
+import { createProduct } from './api/products'
 import ProductList from './components/ProductList'
 import PageHeader from './components/PageHeader'
 import ProductFormModal from './components/ProductFormModal'
@@ -33,13 +34,9 @@ function App() {
     }
   }, [])
 
-  function handleAdd(data: { name: string; price: number }) {
-    const largestId = products.reduce(
-      (largest, product) => Math.max(largest, product.id),
-      0,
-    )
-
-    setProducts([...products, { id: largestId + 1, ...data }])
+  async function handleAdd(data: { name: string; price: number }) {
+    const created = await createProduct(data)
+    setProducts((current) => [...current, created])
     setIsAddOpen(false)
   }
 

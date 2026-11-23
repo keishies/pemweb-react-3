@@ -5,7 +5,7 @@ import type { Product } from '../types/product'
 interface ProductFormModalProps {
   mode: 'add' | 'edit'
   product?: Product
-  onSubmit: (data: { name: string; price: number }) => void
+  onSubmit: (data: { name: string; price: number }) => void | Promise<void>
   onClose: () => void
 }
 
@@ -13,8 +13,10 @@ function ProductFormModal({ mode, product, onSubmit, onClose }: ProductFormModal
   const [name, setName] = useState(product?.name ?? '')
   const [priceInput, setPriceInput] = useState(product ? String(product.price) : '')
   const [errors, setErrors] = useState({ name: false, price: false })
+  const [submitError, setSubmitError] = useState<string | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
     const isNameValid = name.trim() !== ''
@@ -28,7 +30,14 @@ function ProductFormModal({ mode, product, onSubmit, onClose }: ProductFormModal
       return
     }
 
-    onSubmit({ name: name.trim(), price })
+    setSubmitError(null)
+    setIsSubmitting(true)
+    try {
+      await onSubmit({ name: name.trim(), price })
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : 'Terjadi kesalahan.')
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -77,8 +86,9 @@ function ProductFormModal({ mode, product, onSubmit, onClose }: ProductFormModal
             Harga harus lebih dari 0.
           </p>
 
+          {submitError !== null && <p className="form-error">{submitError}</p>}
           <button type="button" onClick={onClose}>Batal</button>
-          <button type="submit">
+          <button type="submit" disabled={isSubmitting}>
             {mode === 'add' ? 'Simpan Produk' : 'Simpan Perubahan'}
           </button>
         </form>
