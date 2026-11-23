@@ -44,14 +44,6 @@ button {
   cursor: pointer;
 }
 
-#root {
-  width: 100%;
-  max-width: 1000px;
-  min-height: 100vh;
-  margin: 0 auto;
-  padding: 40px 24px;
-}
-
 .page-header {
   display: grid;
   grid-template-columns: 1fr auto;
@@ -196,10 +188,6 @@ button {
 }
 
 @media (max-width: 480px) {
-  #root {
-    padding: 24px 16px;
-  }
-
   .page-header h1 {
     font-size: 23px;
   }
