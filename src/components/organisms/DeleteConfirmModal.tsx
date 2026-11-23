@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import type { Product } from '../types/product'
-import { formatPrice } from '../utils/formatPrice'
+import type { Product } from '../../types/product'
+import { formatPrice } from '../../utils/formatPrice'
 
 interface DeleteConfirmModalProps {
   product: Product
