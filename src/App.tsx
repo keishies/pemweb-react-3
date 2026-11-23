@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react'
 import type { Product } from './types/product'
 import { getProducts } from './api/products'
 import { createProduct, deleteProduct, updateProduct } from './api/products'
-import ProductList from './components/ProductList'
-import PageHeader from './components/PageHeader'
-import ProductFormModal from './components/ProductFormModal'
-import DeleteConfirmModal from './components/DeleteConfirmModal'
-import SearchBar from './components/SearchBar'
+import ProductList from './components/organisms/ProductList'
+import PageHeader from './components/molecules/PageHeader'
+import ProductFormModal from './components/organisms/ProductFormModal'
+import DeleteConfirmModal from './components/organisms/DeleteConfirmModal'
+import SearchBar from './components/molecules/SearchBar'
 
 function App() {
   const [products, setProducts] = useState<Product[]>([])

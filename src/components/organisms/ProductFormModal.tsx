@@ -1,6 +1,6 @@
 ﻿import { useState } from 'react'
 import type { FormEvent } from 'react'
-import type { Product } from '../types/product'
+import type { Product } from '../../types/product'
 
 interface ProductFormModalProps {
   mode: 'add' | 'edit'
