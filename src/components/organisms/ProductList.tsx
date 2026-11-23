@@ -9,7 +9,7 @@ interface ProductListProps {
 
 function ProductList({ products, onEdit, onDelete }: ProductListProps) {
   return (
-    <div className="product-grid">
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
       {products.map((product) => (
         <ProductCard
           key={product.id}
