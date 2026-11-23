@@ -90,11 +90,11 @@ function ProductsPage() {
         resultCount={filteredProducts.length}
       />
       {isLoading ? (
-        <p>Memuat produk...</p>
+        <p className="py-10 text-center text-gray-500">Memuat produk...</p>
       ) : loadError !== null ? (
-        <p>{loadError}</p>
+        <p className="py-10 text-center text-red-600">{loadError}</p>
       ) : filteredProducts.length === 0 ? (
-        <p>Produk tidak ditemukan.</p>
+        <p className="py-10 text-center text-gray-500">Produk tidak ditemukan.</p>
       ) : (
         <ProductList
           products={filteredProducts}
@@ -103,7 +103,7 @@ function ProductsPage() {
         />
       )}
       {!isLoading && loadError === null && (
-        <p className="product-summary">
+        <p className="mt-5 text-[13px] text-gray-500">
           Menampilkan {filteredProducts.length} dari {products.length} produk
         </p>
       )}
