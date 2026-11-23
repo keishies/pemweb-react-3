@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { Product } from './types/product'
-import { initialProducts } from './data/products'
+import { getProducts } from './api/products'
 import ProductList from './components/ProductList'
 import PageHeader from './components/PageHeader'
 import ProductFormModal from './components/ProductFormModal'
@@ -8,11 +8,30 @@ import DeleteConfirmModal from './components/DeleteConfirmModal'
 import SearchBar from './components/SearchBar'
 
 function App() {
-  const [products, setProducts] = useState<Product[]>(initialProducts)
+  const [products, setProducts] = useState<Product[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [loadError, setLoadError] = useState<string | null>(null)
   const [isAddOpen, setIsAddOpen] = useState(false)
   const [editingProduct, setEditingProduct] = useState<Product | null>(null)
   const [deletingProduct, setDeletingProduct] = useState<Product | null>(null)
   const [search, setSearch] = useState('')
+
+  useEffect(() => {
+    let ignore = false
+    getProducts()
+      .then((data) => {
+        if (!ignore) setProducts(data)
+      })
+      .catch((error: Error) => {
+        if (!ignore) setLoadError(error.message)
+      })
+      .finally(() => {
+        if (!ignore) setIsLoading(false)
+      })
+    return () => {
+      ignore = true
+    }
+  }, [])
 
   function handleAdd(data: { name: string; price: number }) {
     const largestId = products.reduce(
@@ -76,7 +95,11 @@ function App() {
         onChange={setSearch}
         resultCount={filteredProducts.length}
       />
-      {filteredProducts.length === 0 ? (
+      {isLoading ? (
+        <p>Memuat produk...</p>
+      ) : loadError !== null ? (
+        <p>{loadError}</p>
+      ) : filteredProducts.length === 0 ? (
         <p>Produk tidak ditemukan.</p>
       ) : (
         <ProductList
@@ -85,9 +108,11 @@ function App() {
           onDelete={handleOpenDelete}
         />
       )}
-      <p className="product-summary">
-        Menampilkan {filteredProducts.length} dari {products.length} produk
-      </p>
+      {!isLoading && loadError === null && (
+        <p className="product-summary">
+          Menampilkan {filteredProducts.length} dari {products.length} produk
+        </p>
+      )}
       {isAddOpen && (
         <ProductFormModal
           mode="add"
