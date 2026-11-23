@@ -26,18 +26,23 @@ function ProductDetailPage() {
 
   return (
     <section>
-      <Link to="/products">Kembali ke daftar produk</Link>
       {result === null || result.id !== id ? (
-        <p>Memuat produk...</p>
+        <p className="mt-6 text-gray-500">Memuat produk...</p>
       ) : result.product === null ? (
-        <p>{result.error}</p>
+        <p className="mt-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{result.error}</p>
       ) : (
-        <div>
-          <p>ID: {result.product.id}</p>
-          <h1>{result.product.name}</h1>
-          <p>{formatPrice(result.product.price)}</p>
+        <div className="mt-6 max-w-md rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+          <p className="text-xs text-gray-500">ID: {result.product.id}</p>
+          <h1 className="mt-2 text-3xl font-extrabold tracking-tight">{result.product.name}</h1>
+          <p className="mt-2 text-2xl font-bold text-brand">{formatPrice(result.product.price)}</p>
         </div>
       )}
+      <Link
+        to="/products"
+        className="mt-6 inline-block rounded-lg bg-brand px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-brand-dark"
+      >
+        Kembali ke daftar produk
+      </Link>
     </section>
   )
 }
