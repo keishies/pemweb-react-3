@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { Product } from './types/product'
 import { getProducts } from './api/products'
-import { createProduct, updateProduct } from './api/products'
+import { createProduct, deleteProduct, updateProduct } from './api/products'
 import ProductList from './components/ProductList'
 import PageHeader from './components/PageHeader'
 import ProductFormModal from './components/ProductFormModal'
@@ -67,10 +67,11 @@ function App() {
     setDeletingProduct(product)
   }
 
-  function handleDelete() {
+  async function handleDelete() {
     if (deletingProduct === null) return
     const idToDelete = deletingProduct.id
-    setProducts(products.filter((p) => p.id !== idToDelete))
+    await deleteProduct(idToDelete)
+    setProducts((current) => current.filter((product) => product.id !== idToDelete))
     setDeletingProduct(null)
   }
 

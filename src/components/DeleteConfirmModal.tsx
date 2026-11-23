@@ -1,13 +1,28 @@
+import { useState } from 'react'
 import type { Product } from '../types/product'
 import { formatPrice } from '../utils/formatPrice'
 
 interface DeleteConfirmModalProps {
   product: Product
-  onConfirm: () => void
+  onConfirm: () => void | Promise<void>
   onClose: () => void
 }
 
 function DeleteConfirmModal({ product, onConfirm, onClose }: DeleteConfirmModalProps) {
+  const [deleteError, setDeleteError] = useState<string | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
+
+  async function handleConfirm() {
+    setDeleteError(null)
+    setIsDeleting(true)
+    try {
+      await onConfirm()
+    } catch (error) {
+      setDeleteError(error instanceof Error ? error.message : 'Terjadi kesalahan.')
+      setIsDeleting(false)
+    }
+  }
+
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" onClick={(event) => event.stopPropagation()}>
@@ -44,9 +59,10 @@ function DeleteConfirmModal({ product, onConfirm, onClose }: DeleteConfirmModalP
           <p className="delete-summary__name">{product.name}</p>
           <p className="delete-summary__price">{formatPrice(product.price)}</p>
         </div>
+        {deleteError !== null && <p className="form-error">{deleteError}</p>}
         <div className="modal__actions">
           <button type="button" onClick={onClose}>Batal</button>
-          <button type="button" className="button-danger" onClick={onConfirm}>
+          <button type="button" className="button-danger" onClick={handleConfirm} disabled={isDeleting}>
             Hapus Produk
           </button>
         </div>
