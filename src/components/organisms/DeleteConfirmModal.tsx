@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { Product } from '../../types/product'
 import { formatPrice } from '../../utils/formatPrice'
+import Button from '../atoms/Button'
 
 interface DeleteConfirmModalProps {
   product: Product
@@ -24,20 +25,20 @@ function DeleteConfirmModal({ product, onConfirm, onClose }: DeleteConfirmModalP
   }
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal" onClick={(event) => event.stopPropagation()}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 p-4" onClick={onClose}>
+      <div className="relative max-h-[calc(100vh-2rem)] w-full max-w-[400px] overflow-y-auto rounded-xl bg-white p-6 shadow-2xl" onClick={(event) => event.stopPropagation()}>
         <button
           type="button"
-          className="modal__close"
+          className="absolute top-3.5 right-3.5 flex h-7 w-7 items-center justify-center rounded-md text-[22px] leading-none text-gray-500 hover:bg-gray-100 hover:text-gray-900"
           aria-label="Tutup"
           onClick={onClose}
         >
           &times;
         </button>
         <svg
-          className="modal__icon"
-          width="32"
-          height="32"
+          className="mx-auto mb-3 box-content block rounded-xl bg-red-100 p-3 text-red-600"
+          width="40"
+          height="40"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -52,19 +53,19 @@ function DeleteConfirmModal({ product, onConfirm, onClose }: DeleteConfirmModalP
           <path d="M14 11v6" />
           <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
         </svg>
-        <h2>Hapus Produk?</h2>
-        <p>Produk yang dihapus tidak dapat dikembalikan.</p>
-        <div className="delete-summary">
-          <p className="delete-summary__id">ID: {product.id}</p>
-          <p className="delete-summary__name">{product.name}</p>
-          <p className="delete-summary__price">{formatPrice(product.price)}</p>
+        <h2 className="mb-1.5 text-center text-xl font-bold">Hapus Produk?</h2>
+        <p className="text-center text-sm text-gray-500">Produk yang dihapus tidak dapat dikembalikan.</p>
+        <div className="mt-4 rounded-lg border border-gray-200 px-3.5 py-3">
+          <p className="text-[11px] text-gray-500">ID: {product.id}</p>
+          <p className="mt-1 text-base font-bold text-gray-900">{product.name}</p>
+          <p className="mt-0.5 text-base font-bold text-brand">{formatPrice(product.price)}</p>
         </div>
-        {deleteError !== null && <p className="form-error">{deleteError}</p>}
-        <div className="modal__actions">
-          <button type="button" onClick={onClose}>Batal</button>
-          <button type="button" className="button-danger" onClick={handleConfirm} disabled={isDeleting}>
+        {deleteError !== null && <p className="mt-3 text-xs text-red-600">{deleteError}</p>}
+        <div className="mt-5 flex gap-3">
+          <Button type="button" variant="outline" className="flex-1" onClick={onClose}>Batal</Button>
+          <Button type="button" variant="danger" className="flex-1" onClick={handleConfirm} disabled={isDeleting}>
             Hapus Produk
-          </button>
+          </Button>
         </div>
       </div>
     </div>
