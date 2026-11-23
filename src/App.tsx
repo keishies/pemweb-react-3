@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { Product } from './types/product'
 import { getProducts } from './api/products'
-import { createProduct } from './api/products'
+import { createProduct, updateProduct } from './api/products'
 import ProductList from './components/ProductList'
 import PageHeader from './components/PageHeader'
 import ProductFormModal from './components/ProductFormModal'
@@ -40,15 +40,11 @@ function App() {
     setIsAddOpen(false)
   }
 
-  function handleEdit(data: { name: string; price: number }) {
-    if (editingProduct === null) {
-      return
-    }
-
-    setProducts(
-      products.map((product) =>
-        product.id === editingProduct.id ? { ...product, ...data } : product,
-      ),
+  async function handleEdit(data: { name: string; price: number }) {
+    if (editingProduct === null) return
+    const updated = await updateProduct(editingProduct.id, data)
+    setProducts((current) =>
+      current.map((product) => (product.id === updated.id ? updated : product)),
     )
     setEditingProduct(null)
   }
